@@ -17,5 +17,8 @@
   "author": {
     "name": "Raymond Elferink",
     "web": "https://github.com/raymondelferink"
+  },
+  "dependencies": {
+    "angular-socket-io": "~0.7.x"
   }
 }
