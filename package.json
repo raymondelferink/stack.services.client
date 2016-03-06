@@ -1,0 +1,17 @@
+{
+  "name": "stack.services.client",
+  "version": "0.1.0",
+  "description": "AngularJS client for stack.services.",
+  "main": "dist/angular-flippy.min.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/raymondelferink/stack.services.client.git"
+  },
+  "author": "Raymond Elferink <raymond@raycom.com>",
+  "license": "AGPL",
+  "devDependencies": {
+    "angular": "^1.5.0",
+    "bootstrap": "^3.3.6"
+  }
+}

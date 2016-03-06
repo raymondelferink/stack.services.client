@@ -1,0 +1,21 @@
+{
+  "name": "stack.services.client",
+  "version": "0.1.0",
+  "description": "AngularJS client for stack.services",
+  "homepage": "https://github.com/raymondelferink/stack.services.client",
+  "license": "AGPL",
+  "main": [
+    "./dist/stack.services.js",
+    "./dist/stack.chat.js",
+    "./dist/css/stack.chat.css"
+  ],
+  "ignore": [],
+  "keywords": [
+    "angular",
+    "stack.services"
+  ],
+  "author": {
+    "name": "Raymond Elferink",
+    "web": "https://github.com/raymondelferink"
+  }
+}

@@ -1,0 +1,220 @@
+body{
+    background-image: url('/assets/Rough-Grey-Tilable-Pattern-For-Website-Background.jpg');
+}
+
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}
+
+.chat-area{
+    display: block;
+}
+
+.chat-input{
+    width: 100%;
+    background-color: white;
+    border-top:4px solid #666;
+    position: fixed;
+    right: 0px;
+    left: 0px;
+    padding: 10px 10%;
+    bottom: 60px;
+    z-index: 1030;
+}
+
+.chat-input textarea{
+    float: right;
+    padding: 10px;
+    width: 70%;
+    margin-right: 50px;
+    height: 75px;
+    background-color: whitesmoke;
+    border: 4px solid #666;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+}
+
+.chat-input .add-button{
+    float: right;
+    height: 50px;
+    width: 50px;
+    line-height: 44px !important;
+    background-color: #ffffff;
+    color: #666;
+    font-size: 18px !important;
+    font-weight: bold;
+    /*padding: 8px 10px;*/
+    vertical-align:baseline;
+    text-align: center;
+    display: inline-block;
+    -moz-border-radius: 100px;
+    -webkit-border-radius: 100px;
+    border-radius: 50%;
+    border: 4px solid #666;
+    cursor: pointer;
+}
+
+.chat-more{
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+    background-color: white;
+    border: 2px solid #666;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    text-align: center;
+    vertical-align:baseline;
+    line-height: 20px !important;
+}
+
+.chat-bottom{
+    clear: both;
+    display: block;
+    padding-top: 60px;
+}
+
+.chat-item{
+    margin: 10px 0px;
+    /*display: block;*/
+    width: 100%;
+}
+
+.chat-item.chat-right{
+    float: right;
+}
+.chat-item.chat-left{
+    float: left;
+}
+
+.chat-bubble {
+    /*margin: 40px;*/
+    margin-top: 10px;
+    display: inline-block;
+    position: relative;
+    width: 70%;
+    height: auto;
+    background-color: lightyellow;
+    border: 4px solid #666;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+
+}
+
+.chat-item.chat-right .chat-bubble{
+    background-color: lightcyan;
+}
+
+.chat-item.chat-right .chat-bubble:before{
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: auto;
+    right: -23px;
+    top: 6px;
+    bottom: auto;
+    border: 10px solid;
+    border-color: #666 transparent transparent #666;
+}
+.chat-item.chat-right .chat-bubble:after{
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: auto;
+    right: -16px;
+    top: 10px;
+    bottom: auto;
+    border: 10px solid;
+    border-color: lightcyan transparent transparent lightcyan;
+}
+
+.chat-item.chat-left .chat-bubble:before {
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    right: auto;
+    left: -23px;
+    top: 6px;
+    bottom: auto;
+    border: 10px solid;
+    border-color: #666 #666 transparent transparent;
+}
+.chat-item.chat-left .chat-bubble:after{
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    right: auto;
+    left: -16px;
+    top: 10px;
+    bottom: auto;
+    border: 10px solid;
+    border-color: lightyellow lightyellow transparent transparent;
+}
+
+/* chat bubble contents */
+.chat-text{
+    padding: 10px;
+    text-align: left;
+    line-height: 1.5em;
+}
+.chat-text p{
+    /* remove webkit p margins */
+    white-space: pre-wrap;
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+}
+
+.chat-text .credentials{
+    float: right;
+    font-size: smaller;
+    color: #666;
+}
+
+.chat-icon{
+    /*position: relative;*/
+    /*top: auto;*/
+    height: 50px;
+    width: 50px;
+    line-height: 44px !important;
+    background-color: #ffffff;
+    color: #666;
+    font-size: 18px !important;
+    font-weight: bold;
+    /*padding: 8px 10px;*/
+    vertical-align:baseline;
+    text-align: center;
+    display: inline-block;
+    -moz-border-radius: 100px;
+    -webkit-border-radius: 100px;
+    border-radius: 50%;
+    border: 4px solid #666;
+/*    -moz-box-shadow: 0px 0px 5px #000;
+    -webkit-box-shadow: 0px 0px 5px #000;
+    box-shadow: 0px 0px 5px #000;*/
+}
+
+.chat-item.chat-right .chat-bubble{
+    float:right;
+    margin-right: 50px;
+}
+
+.chat-item.chat-right .chat-icon{
+    float: right;
+}
+
+.chat-item.chat-left .chat-bubble{
+    float:left;
+    margin-left: 50px;
+}
+
+.chat-item.chat-left .chat-icon{
+    float: left;
+}

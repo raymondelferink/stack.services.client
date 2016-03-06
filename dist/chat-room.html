@@ -1,0 +1,14 @@
+
+<div class="chat-area">
+    <div class="chat-more" ng-show="showmore" ng-click="fetch_messages()">get more messages</div>
+    
+<stack-chat-item ng-repeat="chat in messages|orderBy:'created'"></stack-chat-item>
+
+</div>
+<div class="chat-bottom">&nbsp; &nbsp;</div>
+<a id="bottom"></a>
+
+<div class="chat-input">
+    <span class="add-button" ng-click="add_message()"><i class="fa fa-paper-plane"></i></span>
+    <textarea ng-model="new_message"></textarea>
+</div>

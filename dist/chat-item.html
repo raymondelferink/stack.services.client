@@ -1,0 +1,11 @@
+<div class="chat-item {{chat.userid === userid?'chat-right':'chat-left'}}" id="chat_{{chat._id}}">
+    <div class="chat-icon">
+        {{chat.username|initials}}
+    </div>
+    <div class="chat-bubble chat-right-top in">
+      <div class="chat-text">
+        <p>{{chat.message}}</p>
+        <span class="credentials">{{chat.username}} - {{chat.created | date:'d MMM yyyy HH:mm'}}</span>
+      </div>
+    </div>
+</div>
