@@ -128,7 +128,7 @@ angular.module('stack.chat', ['stack.services'])
                 username: "=",
                 userid: "="
             },
-            templateUrl: stack_settings.root + "chat-room.html",
+            templateUrl: stack_settings.root + "dist/view/chat-room.html",
             controller: 'chatController',
             controllerAs: 'chatCtrl'
         };
@@ -137,7 +137,7 @@ angular.module('stack.chat', ['stack.services'])
     .directive("stackChatItem", function (stack_settings) {
         return {
             restrict: "E",
-            templateUrl: stack_settings.root + "chat-item.html"
+            templateUrl: stack_settings.root + "dist/view/chat-item.html"
         };
     })
 ;

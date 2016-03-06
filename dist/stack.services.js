@@ -1,4 +1,4 @@
-angular.module('stack.services', [])
+angular.module('stack.services', ['btford.socket-io'])
 
 .factory('stackSocket', ['$rootScope', '$location', function ($rootScope, $location) {
     var _this = this;
