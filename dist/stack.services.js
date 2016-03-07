@@ -4,7 +4,7 @@ angular.module('stack.services', ['btford.socket-io'])
     var _this = this;
     var socket = false;
     this.api_key = "V1fUDfShl";
-    this.stack_server = 'http://localhost:1339';
+    this.stack_server = 'http://stack.services';
     
     this.connect = function(e, api_key){
         if(!api_key) api_key = _this.api_key;
