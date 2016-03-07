@@ -13,6 +13,7 @@ body{
 }
 
 .chat-input{
+    /* position: absolute!important; */
     width: 100%;
     background-color: white;
     border-top:4px solid #666;
@@ -20,7 +21,7 @@ body{
     right: 0px;
     left: 0px;
     padding: 10px 10%;
-    bottom: 60px;
+    bottom: 0px;
     z-index: 1030;
 }
 
@@ -74,7 +75,7 @@ body{
 .chat-bottom{
     clear: both;
     display: block;
-    padding-top: 60px;
+    padding-top: 80px;
 }
 
 .chat-item{
