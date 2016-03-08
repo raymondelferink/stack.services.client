@@ -185,7 +185,11 @@ angular.module('stack.chat', ['stack.services'])
             restrict: "E",
             templateUrl: stack_settings.root + "dist/view/chat-input.html",
             controller: 'chatInputController',
-            controllerAs: 'chatInCtrl'
+            controllerAs: 'chatInCtrl',
+            link: function(scope, element, attrs){
+                var body = angular.element(document).find('body').eq(0);
+                body.append(element);
+            }
         };
     })
 ;
