@@ -8,7 +8,11 @@ angular.module('stack.services', ['btford.socket-io'])
     var destroy_fun = false;
     
     this.connect = function(e, api_key){
-        if(!api_key) api_key = _this.api_key;
+        if(!api_key){
+            api_key = _this.api_key;
+        }else{
+            _this.api_key = api_key;
+        }
         
         if(api_key){
             socket = io.connect(_this.stack_server,{query: 'key='+api_key+'&protocol='+$location.protocol()+'&host='+$location.host()+'&port='+$location.port()});
@@ -77,8 +81,8 @@ angular.module('stack.services', ['btford.socket-io'])
             }
         },
         reset: function(){
-            socket.disconnect();
-            //socket.connect();
+            this.disconnect();
+            this.connect();
         },
         init: function() {
             socket.removeAllListeners();
