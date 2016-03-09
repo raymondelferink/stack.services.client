@@ -5,17 +5,17 @@ angular.module('stack.services', ['btford.socket-io'])
     var socket = false;
     this.api_key = "V1fUDfShl";
     this.stack_server = 'http://stack.services';
+    var destroy_fun = false;
     
     this.connect = function(e, api_key){
         if(!api_key) api_key = _this.api_key;
         
         if(api_key){
             socket = io.connect(_this.stack_server,{query: 'key='+api_key+'&protocol='+$location.protocol()+'&host='+$location.host()+'&port='+$location.port()});
-        
+            
             this.on('stack api connect', function(){
-                console.log('stack api connect');
                 $rootScope.$broadcast('stack:socket connected');
-            });
+            }, true);
         }else{
             console.log('stack.services: no api key');
         }
@@ -23,20 +23,32 @@ angular.module('stack.services', ['btford.socket-io'])
     };
     
     this.disconnect = function(){
-        socket.io.close();
+        if(socket){
+            
+            socket.io.close();
+//            socket.removeAllListeners();
+            socket = false;
+        }
         $rootScope.$broadcast('stack:socket disconnected');
     };
     
-    this.on = function (eventName, callback) {
+    this.on = function (eventName, callback, destroy_first) {
         if(!socket){
             console.log('not connected');
         }else{
-            socket.on(eventName, function () {
+            if(destroy_first){
+                socket.removeListener(eventName);
+            }
+            var fn = function () {
                 var args = arguments;
                 $rootScope.$apply(function () {
                     callback.apply(socket, args);
                 });
-            });
+            };
+            socket.on(eventName, fn);
+            return function(){
+                socket.removeListener(eventName, fn);
+            };
         }
     };
     
@@ -53,6 +65,7 @@ angular.module('stack.services', ['btford.socket-io'])
             if(!socket){
                 console.log('not connected');
             }else{
+        
                 socket.emit(eventName, data, function () {
                     var args = arguments;
                     $rootScope.$apply(function () {

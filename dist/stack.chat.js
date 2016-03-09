@@ -40,25 +40,49 @@ angular.module('stack.chat', ['stack.services'])
         $scope.messages = [];
         $scope.showmore = false;
         $scope.connected = false;
+        $scope.destroyfn = [];
         
-        this.init = function(){
-            this.on_connect();
-            this.join();
+        $scope.rootScopeOn = function(eventname, fn){
+            var destfn = $rootScope.$on(eventname, fn);
+            $scope.destroyfn[$scope.destroyfn.length] = destfn;
         };
         
-        $rootScope.$on('stack:socket connected', function(){
-            _this.init();
+        $scope.stackSocketOn = function(eventname, fn){
+            var destfn = stackSocket.on(eventname, fn);
+            $scope.destroyfn[$scope.destroyfn.length] = destfn;
+        };
+        
+        $scope.$on("$destroy", function() {
+            for(var i = 0; i < $scope.destroyfn.length; i++){
+                $scope.destroyfn[i]();
+            }
+        });
+        
+        $scope.init = function(){
+            $scope.on_connect();
+            $scope.join();
+        };
+        
+        $scope.clear = function(){
+            $scope.last_id = false;
+            $scope.messages = [];
+            $scope.showmore = false;
+        };
+        
+        $scope.rootScopeOn('stack:socket connected', function(){
             $scope.connected = true;
+            $scope.init();
             $scope.scrollDown();
         });
         
-        $rootScope.$on('stack:socket disconnected', function(){
+        
+        $scope.rootScopeOn('stack:socket disconnected', function(){
             $scope.connected = false;
+            $scope.clear();
             $scope.scrollUp();
         });
         
-        this.join = function(){
-            
+        $scope.join = function(){
             stackSocket.emit('chatroom join', {
                 room: $scope.room,
                 username: $scope.username,
@@ -66,11 +90,7 @@ angular.module('stack.chat', ['stack.services'])
             });
         };
         
-        this.on_connect = function(){
-            stackSocket.on('stack api connect', function(data){
-                console.log('stack api connect');
-                _this.init();
-            });
+        $scope.on_connect = function(){
             
             stackSocket.on('chatroom message', function(data){
                 if(data.success){
@@ -82,14 +102,14 @@ angular.module('stack.chat', ['stack.services'])
             });
             
             stackSocket.on('chatroom join', function(data){
-                console.log('chatroom join', data);
+                
                 if(data.success){
                     $scope.fetch_messages();
                 }
             });
 
             stackSocket.on('chatroom get messages', function(data){
-                console.log('chatroom get messages', data);
+                
                 if(data.success){
                     if(data.messages && data.messages.length >0){
                         var messages = $filter('orderBy')(data.messages, '_id');
@@ -124,8 +144,7 @@ angular.module('stack.chat', ['stack.services'])
         $scope.scrollDown = function(){
             if($scope.connected){
                 $timeout(function() {
-                    $location.hash('chat-bottom-anchor');
-                    $anchorScroll();
+                    $window.scrollTo(0,$window.document.body.scrollHeight);
                 });
             }
         };
@@ -149,12 +168,12 @@ angular.module('stack.chat', ['stack.services'])
         
         $rootScope.$on('stack:socket disconnected', function(){
             $scope.connected = false;
+            _this.new_message = "";
         });        
         
         $scope.add_message = function(){
-            console.log('add_message', $scope.new_message);
             stackSocket.emit('chatroom message', {message: $scope.new_message});            
-            $scope.new_message = '';
+            $scope.new_message = "";
         };        
     }])
 
@@ -187,8 +206,9 @@ angular.module('stack.chat', ['stack.services'])
             controller: 'chatInputController',
             controllerAs: 'chatInCtrl',
             link: function(scope, element, attrs){
-                var body = angular.element(document).find('body').eq(0);
-                body.append(element);
+//                var body = angular.element(document).find('body').eq(0);
+//                body.append(element);
+                
             }
         };
     })
