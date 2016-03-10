@@ -31,12 +31,64 @@ angular.module('stack.chat', ['stack.services'])
             return ini;
         };
     })
-      
-    .controller('chatController', ['stackSocket', '$scope', '$rootScope', '$filter', 
-            '$routeParams', '$location', '$anchorScroll', '$timeout', '$window',
-        function (stackSocket, $scope, $rootScope, $filter, $routeParams, $location, $anchorScroll, $timeout, $window){
+    
+    .service('chatService', ['stackSettings', '$http', '$interval', '$scope', 
+            function(stackSettings, $http, $interval, $scope){
         var _this = this;
-        $scope.last_id = false;
+        this.interval_interrupt = false;
+        this.room = false;
+        this.timeout = 300000;
+        this.last_id = false;
+//        this.check_messages("kamer", "56dc2dfa19a1e7c02eb1ef36");
+            //http://localhost:1339/api/chat/count/V1fUDfShl/kamer/56dc2dfa19a1e7c02eb1ef36
+
+        this.check_messages = function(room, last_id){
+            var room = this.room;
+            var last_id = this.last_id;
+            var check_request = stackSettings.api_uri + stackSettings.endpoint_chat + "/count/" + stackSettings.api_key + "/"+ room + "/" + last_id;
+            $http.get(check_request).then(
+                function(response){
+                    console.log('check_messages success', response);
+                }, 
+                function(response){
+                    console.log('check_messages fail', response);
+                });
+                
+        };
+        
+        this.set_interval = function(){
+            this.stop_interval();
+            this.interval_interrupt = $interval(function() {
+                    _this.check_messages();
+                }, 
+                this.timeout
+            );
+        };
+        
+        this.stop_interval = function(){
+            $interval.cancel(this.interval_interrupt);
+        };
+        
+        this.set_room = function(room){
+            this.room = room;
+            this.set_interval();
+        };
+        
+        this.set_last_id = function(last_id){
+            this.last_id = last_id;
+        }
+        
+        $scope.$on('$destroy', function() {
+            _this.stop_interval();
+        });
+        
+    }])
+
+    .controller('chatController', ['chatService', 'stackSocket', '$scope', '$rootScope', '$filter', 
+            '$routeParams', '$location', '$anchorScroll', '$timeout', '$window',
+        function (chatService, stackSocket, $scope, $rootScope, $filter, $routeParams, $location, $anchorScroll, $timeout, $window){
+        var _this = this;
+        $scope.oldest_id = false;
         $scope.messages = [];
         $scope.showmore = false;
         $scope.connected = false;
@@ -64,7 +116,7 @@ angular.module('stack.chat', ['stack.services'])
         };
         
         $scope.clear = function(){
-            $scope.last_id = false;
+            $scope.oldest_id = false;
             $scope.messages = [];
             $scope.showmore = false;
         };
@@ -98,12 +150,14 @@ angular.module('stack.chat', ['stack.services'])
                     if(data.message.userid === $scope.userid){
                         $scope.scrollDown();
                     }
+                    chatService.set_last_id(data.message._id);
                 }
             });
             
             stackSocket.on('chatroom join', function(data){
                 
                 if(data.success){
+                    //chatService.set_room($scope.room);
                     $scope.fetch_messages();
                 }
             });
@@ -113,17 +167,19 @@ angular.module('stack.chat', ['stack.services'])
                 if(data.success){
                     if(data.messages && data.messages.length >0){
                         var messages = $filter('orderBy')(data.messages, '_id');
-                        var last_id = messages[0]._id;
+                        var oldest_id = messages[0]._id;
+                        
 
-                        if(!$scope.last_id || last_id < $scope.last_id){
+                        if(!$scope.oldest_id || oldest_id < $scope.oldest_id){
                             $scope.messages = $scope.messages.concat(data.messages);
-                            if(!$scope.last_id){
+                            if(!$scope.oldest_id){
                                 $scope.scrollDown();
                             }else{
-                                $scope.scrollDown('chat_'+$scope.last_id);
+                                $scope.scrollDown('chat_'+$scope.oldest_id);
                             }
-                            $scope.last_id = last_id;
+                            $scope.oldest_id = oldest_id;
                             $scope.showmore = (data.pagesize === data.messages.length);
+                            chatService.set_last_id($scope.messages[$scope.messages.length]._id);
                         }
                     }else{
                         $scope.showmore = false;
@@ -138,7 +194,7 @@ angular.module('stack.chat', ['stack.services'])
         
         
         $scope.fetch_messages = function(){
-            stackSocket.emit('chatroom get messages', {last_id: $scope.last_id});
+            stackSocket.emit('chatroom get messages', {oldest_id: $scope.oldest_id});
         };
         
         $scope.scrollDown = function(){

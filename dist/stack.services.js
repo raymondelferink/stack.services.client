@@ -1,10 +1,18 @@
 angular.module('stack.services', ['btford.socket-io'])
 
-.factory('stackSocket', ['$rootScope', '$location', function ($rootScope, $location) {
+.value('stackSettings', {
+        api_key: 'V1fUDfShl',
+        api_uri: 'http://stack.services',
+        endpoint_chat: '/chat'
+    }
+)
+
+
+.factory('stackSocket', ['stackSettings', '$rootScope', '$location', function (stackSettings, $rootScope, $location) {
     var _this = this;
     var socket = false;
-    this.api_key = "V1fUDfShl";
-    this.stack_server = 'http://stack.services';
+    this.api_key = stackSettings.api_key;
+    this.stack_server = stackSettings.api_uri;
     var destroy_fun = false;
     
     this.connect = function(e, api_key){
