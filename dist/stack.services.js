@@ -2,7 +2,7 @@ angular.module('stack.services', ['btford.socket-io'])
 
 .value('stackSettings', {
         api_key: 'V1fUDfShl',
-        api_uri: 'http://stack.services',
+        api_uri: 'https://stack.services',
         endpoint_chat: '/chat'
     }
 )
