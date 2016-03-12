@@ -218,3 +218,22 @@
 .chat-item.chat-left .chat-icon{
     float: left;
 }
+
+.chat-new{
+    position: absolute;
+    height: 2rem;
+    width: 2rem;
+    top:1rem;
+    left:1.5rem;
+    line-height: 2rem !important;
+    background-color: #ffffff;
+    color: #2c3e50;
+    font-size: 1rem !important;
+    vertical-align:baseline;
+    text-align: center;
+    display: inline-block;
+    -moz-border-radius: 4rem;
+    -webkit-border-radius: 4rem;
+    border-radius: 50%;
+    border: 1px solid #666;
+}

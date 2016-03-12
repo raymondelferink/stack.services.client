@@ -28,36 +28,50 @@ angular.module('stack.chat', ['stack.services'])
         };
     })
     
-    .service('chatService', ['stackSettings', '$http', '$interval', 
-            function(stackSettings, $http, $interval){
+    .service('chatService', ['stackSettings', '$http', '$interval', '$rootScope', 
+            function(stackSettings, $http, $interval, $rootScope){
         var _this = this;
         this.interval_interrupt = false;
         this.room = false;
-        this.timeout = 300000;
+        this.poll_interval = 3000;
         this.last_id = false;
+        this.connected = false;
 //        this.check_messages("kamer", "56dc2dfa19a1e7c02eb1ef36");
             //http://localhost:1339/api/chat/count/V1fUDfShl/kamer/56dc2dfa19a1e7c02eb1ef36
 
         this.check_messages = function(room, last_id){
-            var room = this.room;
-            var last_id = this.last_id;
-            var check_request = stackSettings.api_uri + stackSettings.endpoint_chat + "/count/" + stackSettings.api_key + "/"+ room + "/" + last_id;
-            $http.get(check_request).then(
-                function(response){
-                    console.log('check_messages success', response);
-                }, 
-                function(response){
-                    console.log('check_messages fail', response);
-                });
-                
+            if(!this.connected){
+                var room = this.room;
+                var last_id = this.last_id;
+                var check_request = stackSettings.api_uri + stackSettings.endpoint_chat + "/count/" + stackSettings.api_key + "/"+ room + "/";
+                if(last_id){
+                    check_request += last_id;
+                }
+
+                $http.get(check_request).then(
+                    function(response){
+                        console.log('check_messages success', response.data);
+                        if(response.data && 
+                                response.data.count && 
+                                response.data.count > 0){
+                            console.log('broadcast', response.data.count);
+                            $rootScope.$broadcast('stack.chat: new messages', response.data);
+                        }
+                    }, 
+                    function(response){
+                        console.log('check_messages fail', response.data);
+                    });
+            }
         };
         
         this.set_interval = function(){
+            console.log('set_interval')
             this.stop_interval();
+            
             this.interval_interrupt = $interval(function() {
                     _this.check_messages();
                 }, 
-                this.timeout
+                this.poll_interval
             );
         };
         
@@ -67,6 +81,7 @@ angular.module('stack.chat', ['stack.services'])
         
         this.set_room = function(room){
             this.room = room;
+            this.check_messages();
             this.set_interval();
         };
         
@@ -74,9 +89,17 @@ angular.module('stack.chat', ['stack.services'])
             this.last_id = last_id;
         };
         
-//        $scope.$on('$destroy', function() {
-//            _this.stop_interval();
-//        });
+        this.connect = function(connected){
+            this.connected = connected;
+        };
+        
+        $rootScope.$on('stack:socket connected', function(){
+            _this.connect(true);
+        });
+        
+        $rootScope.$on('stack:socket disconnected', function(){
+            _this.connect(false);
+        });
         
     }])
 
@@ -104,6 +127,7 @@ angular.module('stack.chat', ['stack.services'])
             for(var i = 0; i < $scope.destroyfn.length; i++){
                 $scope.destroyfn[i]();
             }
+            
         });
         
         $scope.init = function(){
@@ -155,6 +179,7 @@ angular.module('stack.chat', ['stack.services'])
                 if(data.success){
                     //chatService.set_room($scope.room);
                     $scope.fetch_messages();
+                    $rootScope.$broadcast('stack.chat: new messages', {count: 0});
                 }
             });
 
@@ -162,10 +187,9 @@ angular.module('stack.chat', ['stack.services'])
                 
                 if(data.success){
                     if(data.messages && data.messages.length >0){
-                        var messages = $filter('orderBy')(data.messages, '_id');
-                        var oldest_id = messages[0]._id;
-                        
 
+                        var oldest_id = data.messages[data.messages.length-1]._id;
+                        
                         if(!$scope.oldest_id || oldest_id < $scope.oldest_id){
                             $scope.messages = $scope.messages.concat(data.messages);
                             if(!$scope.oldest_id){
@@ -175,7 +199,9 @@ angular.module('stack.chat', ['stack.services'])
                             }
                             $scope.oldest_id = oldest_id;
                             $scope.showmore = (data.pagesize === data.messages.length);
-                            chatService.set_last_id($scope.messages[$scope.messages.length]._id);
+                            if($scope.messages.length > 0){
+                                chatService.set_last_id($scope.messages[0]._id);
+                            }
                         }
                     }else{
                         $scope.showmore = false;
@@ -186,7 +212,7 @@ angular.module('stack.chat', ['stack.services'])
             stackSocket.on('chatroom users present', function(data){
                 console.log('chatroom users present', data);
             });
-        }
+        };
         
         
         $scope.fetch_messages = function(){
@@ -229,6 +255,17 @@ angular.module('stack.chat', ['stack.services'])
         };        
     }])
 
+    .controller('chatIndicatorController', ['stackSocket', '$scope', '$rootScope',
+        function (stackSocket, $scope, $rootScope){
+        var _this = this;
+        $scope.new_count = 0;
+        
+        $rootScope.$on('stack.chat: new messages', function(e, data){
+            console.log('on', data.count, data.count > 0);
+            $scope.new_count = data.count;
+        });     
+    }])
+
 
     .directive("stackChatRoom", function (stackSettings) {
         return {
@@ -262,6 +299,16 @@ angular.module('stack.chat', ['stack.services'])
 //                body.append(element);
                 
             }
+        };
+    })
+    
+    .directive("stackChatIndicator", function(stackSettings){
+        return{
+            restrict: "E",
+            templateUrl: stackSettings.root + "dist/view/chat-indicator.html",
+            scope: {},
+            controller: 'chatIndicatorController',
+            controllerAs: 'chatIndCtrl'
         };
     })
 ;
