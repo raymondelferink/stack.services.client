@@ -1,10 +1,6 @@
 'use strict';
 
 angular.module('stack.chat', ['stack.services'])
-
-    .value('stack_settings', {
-        root: 'bower_components/stack.services.client/'
-    })
     
     .filter('initials', function() {
         return function(name) {
@@ -32,8 +28,8 @@ angular.module('stack.chat', ['stack.services'])
         };
     })
     
-    .service('chatService', ['stackSettings', '$http', '$interval', '$scope', 
-            function(stackSettings, $http, $interval, $scope){
+    .service('chatService', ['stackSettings', '$http', '$interval', 
+            function(stackSettings, $http, $interval){
         var _this = this;
         this.interval_interrupt = false;
         this.room = false;
@@ -76,11 +72,11 @@ angular.module('stack.chat', ['stack.services'])
         
         this.set_last_id = function(last_id){
             this.last_id = last_id;
-        }
+        };
         
-        $scope.$on('$destroy', function() {
-            _this.stop_interval();
-        });
+//        $scope.$on('$destroy', function() {
+//            _this.stop_interval();
+//        });
         
     }])
 
@@ -234,7 +230,7 @@ angular.module('stack.chat', ['stack.services'])
     }])
 
 
-    .directive("stackChatRoom", function (stack_settings) {
+    .directive("stackChatRoom", function (stackSettings) {
         return {
             restrict: "E",
             scope: {
@@ -242,23 +238,23 @@ angular.module('stack.chat', ['stack.services'])
                 username: "=",
                 userid: "="
             },
-            templateUrl: stack_settings.root + "dist/view/chat-room.html",
+            templateUrl: stackSettings.root + "dist/view/chat-room.html",
             controller: 'chatController',
             controllerAs: 'chatCtrl'
         };
     })
     
-    .directive("stackChatItem", function (stack_settings) {
+    .directive("stackChatItem", function (stackSettings) {
         return {
             restrict: "E",
-            templateUrl: stack_settings.root + "dist/view/chat-item.html"
+            templateUrl: stackSettings.root + "dist/view/chat-item.html"
         };
     })
     
-    .directive("stackChatInput", function (stack_settings) {
+    .directive("stackChatInput", function (stackSettings) {
         return {
             restrict: "E",
-            templateUrl: stack_settings.root + "dist/view/chat-input.html",
+            templateUrl: stackSettings.root + "dist/view/chat-input.html",
             controller: 'chatInputController',
             controllerAs: 'chatInCtrl',
             link: function(scope, element, attrs){

@@ -1,6 +1,7 @@
 angular.module('stack.services', ['btford.socket-io'])
 
 .value('stackSettings', {
+        root: 'bower_components/stack.services.client/',
         api_key: 'V1fUDfShl',
         api_uri: 'https://stack.services',
         endpoint_chat: '/chat'
