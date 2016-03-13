@@ -8,6 +8,37 @@ angular.module('stack.services', ['btford.socket-io'])
     }
 )
 
+.service('stackServices', ['$localStorage', function($localStorage){
+    
+    this.get = function(service, uid, key){
+        if($localStorage.stackservices && 
+                $localStorage.stackservices[service] &&
+                $localStorage.stackservices[service][uid] &&
+                $localStorage.stackservices[service][uid][key]){
+
+            return $localStorage.stackservices[service][uid][key];
+        }else{
+            return null;
+        }               
+    };
+    
+    this.set = function(service, uid, key, value){
+        if(!$localStorage.stackservices){
+            $localStorage.stackservices = {};
+        }
+        if(!$localStorage.stackservices[service]){
+            $localStorage.stackservices[service] = {};
+        }
+        if(!$localStorage.stackservices[service][uid]){
+            $localStorage.stackservices[service][uid] = {};
+        }
+        
+        $localStorage.stackservices[service][uid][key] = value;
+        return value;
+    };
+        
+}])
+
 
 .factory('stackSocket', ['stackSettings', '$rootScope', '$location', function (stackSettings, $rootScope, $location) {
     var _this = this;

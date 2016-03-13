@@ -28,18 +28,22 @@ angular.module('stack.chat', ['stack.services'])
         };
     })
     
-    .service('chatService', ['stackSettings', '$http', '$interval', '$rootScope', 
-            function(stackSettings, $http, $interval, $rootScope){
+    .service('chatService', ['stackSettings', 'stackServices', '$http', '$interval', '$rootScope', 
+            function(stackSettings, stackServices, $http, $interval, $rootScope){
         var _this = this;
         this.interval_interrupt = false;
+        
+        this.state = false;
+        this.userid = false;
         this.room = false;
+        
         this.poll_interval = 3000;
         this.last_id = false;
         this.connected = false;
 //        this.check_messages("kamer", "56dc2dfa19a1e7c02eb1ef36");
             //http://localhost:1339/api/chat/count/V1fUDfShl/kamer/56dc2dfa19a1e7c02eb1ef36
 
-        this.check_messages = function(room, last_id){
+        this.check_messages = function(){
             if(!this.connected){
                 var room = this.room;
                 var last_id = this.last_id;
@@ -79,14 +83,31 @@ angular.module('stack.chat', ['stack.services'])
             $interval.cancel(this.interval_interrupt);
         };
         
-        this.set_room = function(room){
+        this.get_state = function(){
+            this.state = stackServices.get('chat', this.userid, this.room);
+            if(!this.state){
+                this.state = {};
+            }
+            this.last_id = this.state.last_id;
+        };
+        
+        this.set_state = function(){
+            this.state.last_id = this.last_id;
+            stackServices.set('chat', this.userid, this.room, this.state);
+        };
+        
+        this.set_room = function(room, userid){
             this.room = room;
+            this.userid = userid;
+            this.get_state();
+            
             this.check_messages();
             this.set_interval();
         };
         
         this.set_last_id = function(last_id){
             this.last_id = last_id;
+            this.set_state();
         };
         
         this.connect = function(connected){
