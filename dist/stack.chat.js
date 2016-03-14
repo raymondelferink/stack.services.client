@@ -37,7 +37,7 @@ angular.module('stack.chat', ['stack.services'])
         this.userid = false;
         this.room = false;
         
-        this.poll_interval = 3000;
+        this.poll_interval = 30000;
         this.last_id = false;
         this.connected = false;
 //        this.check_messages("kamer", "56dc2dfa19a1e7c02eb1ef36");
