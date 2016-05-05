@@ -5,9 +5,7 @@
   "homepage": "https://github.com/raymondelferink/stack.services.client",
   "license": "AGPL",
   "main": [
-    "./dist/stack.services.js",
-    "./dist/stack.chat.js",
-    "./dist/css/stack.chat.css"
+    "./dist/stack.services.js"
   ],
   "ignore": [],
   "keywords": [
