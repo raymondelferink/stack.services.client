@@ -271,6 +271,7 @@ angular.module('stack.chat', ['stack.services'])
         });        
         
         $scope.add_message = function(){
+            angular.element(document.querySelector('#chat-input-field')).trigger('blur');
             stackSocket.emit('chatroom message', {message: $scope.new_message});            
             $scope.new_message = "";
         };        
