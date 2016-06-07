@@ -4,6 +4,9 @@ angular.module('stack.chat', ['stack.services'])
     
     .filter('initials', function() {
         return function(name) {
+            if(!name){
+                return "";
+            }
             var n = name.split(" ");
             var ns = false;
             var ini = "";
