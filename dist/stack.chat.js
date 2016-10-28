@@ -70,7 +70,6 @@ angular.module('stack.chat', ['stack.services'])
         };
         
         this.set_interval = function(){
-            console.log('set_interval')
             this.stop_interval();
             $rootScope.$broadcast('stack.chat: new messages', {count: 0});
             this.interval_interrupt = $interval(function() {
