@@ -58,9 +58,7 @@ angular.module('stack.chat', ['stack.services'])
                 $http.get(check_request).then(
                     function(response){
                         console.log('check_messages success', response.data);
-                        if(response.data && 
-                                response.data.count && 
-                                response.data.count > 0){
+                        if(response.data){
                             console.log('broadcast', response.data.count);
                             $rootScope.$broadcast('stack.chat: new messages', response.data);
                         }
@@ -74,7 +72,7 @@ angular.module('stack.chat', ['stack.services'])
         this.set_interval = function(){
             console.log('set_interval')
             this.stop_interval();
-            
+            $rootScope.$broadcast('stack.chat: new messages', {count: 0});
             this.interval_interrupt = $interval(function() {
                     _this.check_messages();
                 }, 
