@@ -4,7 +4,9 @@ angular.module('stack.services', ['btford.socket-io'])
         root: 'bower_components/stack.services.client/',
         api_key: 'V1fUDfShl',
         api_uri: 'https://stack.services',
-        endpoint_chat: '/api/chat'
+        poll_interval: 30000,   //30 seconds between polls
+        endpoint_chat: '/api/chat',
+        endpoint_interact: '/api/interact' // for later peer interaction stuff
     }
 )
 
