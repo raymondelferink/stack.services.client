@@ -53,23 +53,25 @@ angular.module('stack.chat', ['stack.services'])
                 var check_request = stackSettings.api_uri + stackSettings.endpoint_chat + "/count/" + stackSettings.api_key + "/"+ room + "/";
                 if(last_id){
                     check_request += last_id;
-
-                    $http.get(check_request).then(
-                        function(response){
-                            console.log('check_messages success', response.data);
-                            if(response.data){
-                                console.log('broadcast', response.data.count);
+                }
+                $http.get(check_request).then(
+                    function(response){
+                        console.log('check_messages success', response.data);
+                        if(response.data){
+                            console.log('broadcast', response.data.count);
+                            if(response.data.count > 0 && !last_id){
+                                $rootScope.$broadcast('stack.chat: new messages', {count: -1});
+                            } else {
                                 $rootScope.$broadcast('stack.chat: new messages', response.data, last_id);
                             }
-                        }, 
-                        function(response){
-                            console.log('check_messages fail', response.data);
                         }
-                    );
+                    }, 
+                    function(response){
+                        console.log('check_messages fail', response.data);
+                    }
+                );
                 
-                } else {
-                    $rootScope.$broadcast('stack.chat: new messages', {count: -1});
-                }
+                
             }
         };
         
