@@ -237,3 +237,8 @@
     border-radius: 50%;
     border: 1px solid #666;
 }
+
+.chat-new i{
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
