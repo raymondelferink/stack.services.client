@@ -239,6 +239,6 @@
 }
 
 .chat-new i{
-    color: #2c3e50;
-    font-size: 1.2rem;
+    color: #2c3e50 !important;
+    font-size: 1.2rem !important;
 }
