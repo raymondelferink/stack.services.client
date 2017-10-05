@@ -42,6 +42,7 @@ angular.module('stack.chat', ['stack.services'])
         
         this.poll_interval = stackSettings.poll_interval; // 30 seconds between polls
         this.last_id = false;
+        this.last_created = false;
         this.connected = false;
 //        this.check_messages("kamer", "56dc2dfa19a1e7c02eb1ef36");
             //http://localhost:1339/api/chat/count/V1fUDfShl/kamer/56dc2dfa19a1e7c02eb1ef36
@@ -99,6 +100,7 @@ angular.module('stack.chat', ['stack.services'])
         
         this.set_state = function(){
             this.state.last_id = this.last_id;
+            this.state.last_created = this.last_created;
             stackServices.set('chat', this.userid, this.room, this.state);
         };
         
@@ -111,8 +113,9 @@ angular.module('stack.chat', ['stack.services'])
             this.set_interval();
         };
         
-        this.set_last_id = function(last_id){
+        this.set_last_id = function(last_id, last_created){
             this.last_id = last_id;
+            this.last_created = last_created;
             this.set_state();
         };
         
@@ -197,7 +200,7 @@ angular.module('stack.chat', ['stack.services'])
                     if(data.message.userid === $scope.userid){
                         $scope.scrollDown();
                     }
-                    chatService.set_last_id(data.message._id);
+                    chatService.set_last_id(data.message._id, data.message.created);
                 }
             });
             
@@ -227,7 +230,7 @@ angular.module('stack.chat', ['stack.services'])
                             $scope.oldest_id = oldest_id;
                             $scope.showmore = (data.pagesize === data.messages.length);
                             if($scope.messages.length > 0){
-                                chatService.set_last_id($scope.messages[0]._id);
+                                chatService.set_last_id($scope.messages[0]._id, $scope.messages[0].created);
                             }
                         }
                     }else{
