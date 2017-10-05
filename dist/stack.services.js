@@ -10,7 +10,7 @@ angular.module('stack.services', ['btford.socket-io'])
     }
 )
 
-.service('stackServices', ['$localStorage', function($localStorage){
+.service('stackServices', ['$localStorage', '$rootScope', function($localStorage, $rootScope){
     
     this.get = function(service, uid, key){
         if($localStorage.stackservices && 
@@ -36,6 +36,13 @@ angular.module('stack.services', ['btford.socket-io'])
         }
         
         $localStorage.stackservices[service][uid][key] = value;
+        
+        $rootScope.$broadcast('stackServices.set:'+service, {
+            uid: uid,
+            key: key,
+            value: value
+        });
+        
         return value;
     };
         
