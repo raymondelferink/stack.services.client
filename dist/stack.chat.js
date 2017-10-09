@@ -199,6 +199,8 @@ angular.module('stack.chat', ['stack.services'])
                     $scope.messages.push(data.message);
                     if(data.message.userid === $scope.userid){
                         $scope.scrollDown();
+                        
+                        $rootScope.$broadcast('stackServices.new:chat', data.message);
                     }
                     chatService.set_last_id(data.message._id, data.message.created);
                 }
