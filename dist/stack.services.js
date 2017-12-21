@@ -68,6 +68,7 @@ angular.module('stack.services', ['btford.socket-io'])
             
             this.on('stack api connect', function(){
                 $rootScope.$broadcast('stack:socket connected');
+                $rootScope.$broadcast('debug', 'stack:socket connected');
             }, true);
         }else{
             console.log('stack.services: no api key');
@@ -87,10 +88,11 @@ angular.module('stack.services', ['btford.socket-io'])
     
     this.on = function (eventName, callback, destroy_first) {
         if(!socket){
+            $rootScope.$broadcast('debug', 'not connected', eventName);
             console.log('not connected');
         }else{
             if(destroy_first){
-                socket.removeListener(eventName);
+                socket.removeAllListeners(eventName);
             }
             var fn = function () {
                 var args = arguments;
