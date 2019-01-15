@@ -1,4 +1,4 @@
-angular.module('stack.services', ['btford.socket-io'])
+angular.module('stack.services', [])
 
 .value('stackSettings', {
         root: 'bower_components/stack.services.client/',
